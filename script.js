@@ -1,40 +1,27 @@
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-}
+function translateText() {
+    let text = document.getElementById("inputText").value;
+    let sourceLang = document.getElementById("sourceLang").value;
+    let targetLang = document.getElementById("targetLang").value;
 
-.container {
-    max-width: 500px;
-    background: white;
-    padding: 20px;
-    margin: 50px auto;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-}
+    let apiKey = "YOUR_API_KEY"; // Replace with your Google Cloud API Key
+    let url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
+    
+    let requestBody = {
+        q: text,
+        source: sourceLang,
+        target: targetLang,
+        format: "text"
+    };
 
-h1 {
-    margin-bottom: 20px;
-}
-
-textarea {
-    width: 100%;
-    height: 100px;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-select, button {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-}
-
-#outputText {
-    margin-top: 20px;
-    font-weight: bold;
-    font-size: 18px;
-    color: #333;
+    fetch(url, {
+        method: "POST",
+        body: JSON.stringify(requestBody),
+        headers: { "Content-Type": "application/json" }
+    })
+    .then(response => response.json())
+    .then(data => {
+        let translatedText = data.data.translations[0].translatedText;
+        document.getElementById("outputText").innerText = translatedText;
+    })
+    .catch(error => console.error("Error:", error));
 }
